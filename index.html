@@ -36,6 +36,7 @@
       position: relative;
       padding-top: 20vh;
       padding-left: 5vh;
+      cursor: pointer;
     }
     .call-to-arms {
       font-size: 48px;
@@ -97,7 +98,7 @@
 <body>
   <div class="main-container" data-scroll-container>
 
-    <section class="preamble" data-scroll-section>
+    <section class="preamble" id="preamble" data-scroll-section>
       <div class="call-to-arms" 
           data-scroll 
           data-scroll-sticky 
@@ -130,6 +131,12 @@
   </div>
 
   <script>
+    let flrp = document.getElementById('flip-panel');
+    let vid = document.getElementById('bird-vid');
+    let videoDuration;
+    let videoCursor = 0;
+    let isLoaded = false;
+
     const scroll = new LocomotiveScroll({
       el: document.querySelector('[data-scroll-container]'),
       smooth: true,
@@ -140,11 +147,12 @@
       touchMultiplier: 1
     });
 
-    let flrp = document.getElementById('flip-panel');
-    let vid = document.getElementById('bird-vid');
-    let videoDuration;
-    let videoCursor = 0;
-    let isLoaded = false;
+    const autoRun = function autoRun() {
+      scroll.scrollTo('.reveal', {
+        duration: 2000, easing: [0.00, 0.0, 0.58, 1.0]
+      })
+    };
+    document.getElementById('preamble').addEventListener('click', autoRun);
 
     vid.addEventListener('loadeddata', function(event) {
       videoDuration = vid.duration;
