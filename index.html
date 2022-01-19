@@ -32,7 +32,7 @@
     }
 
     .preamble {
-      min-height: 200vh;
+      min-height: 400vh;
       position: relative;
       padding-top: 20vh;
       padding-left: 5vh;
@@ -148,9 +148,13 @@
     });
 
     const autoRun = function autoRun() {
-      scroll.scrollTo('.reveal', {
-        duration: 2000, easing: [0.00, 0.0, 0.58, 1.0]
-      })
+      scroll.scrollTo(document.scrollingElement.scrollHeight * 3, {
+        duration: 1500,
+        easing: [0.00, 0.0, 0.58, 1.0],
+        callback: () => {
+          scroll.scrollTo('bottom');
+        }
+      });
     };
     document.getElementById('preamble').addEventListener('click', autoRun);
 
@@ -166,7 +170,7 @@
       // Get all current elements : args.currentElements
       if(typeof args.currentElements['hey'] === 'object') {
         let progress = args.currentElements['hey'].progress;
-        let scaleFactor = Math.min(180, Math.round(progress * -180 ));
+        let scaleFactor = Math.min(180, Math.round(progress * -180));
         flrp.style.transform = `rotateX(${scaleFactor}deg)`;
         if (isLoaded) {
           videoCursor = progress * videoDuration;
