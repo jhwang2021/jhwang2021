@@ -32,7 +32,7 @@
     }
 
     .preamble {
-      min-height: 270vh;
+      min-height: 200vh;
       position: relative;
       padding-top: 20vh;
       padding-left: 5vh;
@@ -54,23 +54,19 @@
     }
 
     .birdcage {
-      min-height: 33vh;
+      text-align: right;
     }
-    .the-birds {
-      position: fixed;
-      right: 0;
-      bottom: 20px;
-      opacity: 0;
-    }
-    #bird1 {
-      opacity: 1;
+    #bird-vid {
+      height: 300px;
     }
 
     .reveal {
+      min-height: 100vh;
+      background-color: #000;
       text-align: center;
-      min-height: 50vh;
-      padding-top: 30vh;
-      padding-bottom: 20vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
     }
 
     .wordmark {
@@ -94,7 +90,6 @@
 
     .footnote {
       font-size: .8em;
-      min-height: 15vh;
     }
   </style>
   <script src="locomotive-scroll.min.js"></script>
@@ -111,27 +106,28 @@
         <div>We're</div>
         <div id="flip-panel">Flipping</div>
         <div>CRM</div>
-      </div>
-      <div class="birdcage" data-scroll data-scroll-sticky data-scroll-target=".preamble">
-        <div class="the-birds" id="bird1"><img src="img/hand1.png" alt="hands 1"></div>
-        <div class="the-birds" id="bird2"><img src="img/hand2.png" alt="hands 2"></div>
-        <div class="the-birds" id="bird3"><img src="img/hand3.png" alt="hands 3"></div>
+        <div class="birdcage">
+          <video class="the-birds" id="bird-vid" autobuffer="autobuffer" preload="preload" autoplay loop muted playsinline>
+            <source src="https://res.cloudinary.com/dyn2cmtsg/video/upload/v1642563082/iwea0u051rn9zby5lvih.mp4" type="video/mp4">
+            <source src="https://res.cloudinary.com/dyn2cmtsg/video/upload/v1642563082/iwea0u051rn9zby5lvih.mov" type="video/mov">
+          </video>
+        </div>
       </div>
     </section>
   
     <section class="reveal" data-scroll-section>
-      <p class="wordmark">Bestomer</p>
-      <p><button class="about">About Us</button></p>
-      <p><img src="img/hand4.png" alt="hands 4"></p>
-    </section>
-
-    <section class="footnote" data-scroll-section>
+      <div>
+        <p class="wordmark">Bestomer</p>
+        <p><button class="about">About Us</button></p>
+        <p><img src="img/hand4.png" alt="hands 4"></p>
+      </div>
+      <div class="footnote">
         © 2021 Bestomer.<br>
         All Rights Reserved.
+      </div>
     </section>
-  
-  </div>
 
+  </div>
 
   <script>
     const scroll = new LocomotiveScroll({
@@ -140,13 +136,23 @@
       tablet: {smooth: true},
       smartphone: {smooth: true},
       scrollFromAnywhere: true,
-      touchMultiplier: 5
+      multiplier: 2,
+      touchMultiplier: 1
     });
 
     let flrp = document.getElementById('flip-panel');
-    let bird1 = document.getElementById('bird1');
-    let bird2 = document.getElementById('bird2');
-    let bird3 = document.getElementById('bird3');
+    let vid = document.getElementById('bird-vid');
+    let videoDuration;
+    let videoCursor = 0;
+    let isLoaded = false;
+
+    vid.addEventListener('loadeddata', function(event) {
+      videoDuration = vid.duration;
+      isLoaded = true;
+      // more iOS hacks
+      vid.play();
+      vid.pause();
+    });
 
     scroll.on('scroll', (args) => {
       // Get all current elements : args.currentElements
@@ -154,24 +160,12 @@
         let progress = args.currentElements['hey'].progress;
         let scaleFactor = Math.min(180, Math.round(progress * -180 ));
         flrp.style.transform = `rotateX(${scaleFactor}deg)`;
-        if (progress < .25) {
-          bird1.style.opacity = Math.min(1, 1 - progress * 3.0);
-          bird2.style.opacity = 0;
-          bird3.style.opacity = 0;
-        } else if (progress >= .25 && progress < .50) {
-          bird1.style.opacity = 0;
-          bird2.style.opacity = (1 - (progress - .33) * 3.0);
-          bird3.style.opacity = 0;
-        } else {
-          bird1.style.opacity = 0;
-          bird2.style.opacity = 0;
-          bird3.style.opacity = (1 - (progress - .66) * 3.0);
+        if (isLoaded) {
+          videoCursor = progress * videoDuration;
+          vid.currentTime = videoCursor;
         }
       }
     });
-
-    // this is for some bug on ios webkit where the hand doesn't show on init
-    setTimeout(() => scroll.scrollTo(1), 100);
   </script>
 </body>
 </html>
