@@ -62,7 +62,7 @@
     }
 
     #heart-vid {
-      height: 200px;
+      width: 400px;
     }
 
     .reveal {
@@ -127,7 +127,7 @@
         <p><button class="about">About Us</button></p>
         <p>
           <video id="heart-vid" autobuffer="autobuffer" preload="preload" autoplay muted playsinline>
-            <source src="https://res.cloudinary.com/dyn2cmtsg/video/upload/c_crop,g_north_west,h_850,w_1920/v1642637024/uclztijxuutegh69sdrc.mp4" type="video/mp4">
+            <source src="https://res.cloudinary.com/dyn2cmtsg/video/upload/c_crop,g_north,h_850,w_1720/v1642637024/uclztijxuutegh69sdrc.mp4" type="video/mp4">
           </video>
           </p>
       </div>
@@ -201,7 +201,7 @@
       } else if (typeof args.currentElements['reveal'] === 'object') {
         let progress = args.currentElements['reveal'].progress;
         if (heartVidLoaded) {
-          heartVidCursor = progress * heartVidDuration;
+          heartVidCursor = progress * heartVidDuration * 1.5;
           heartVidEl.currentTime = heartVidCursor;
         }
       }
