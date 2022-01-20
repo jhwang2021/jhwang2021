@@ -61,6 +61,10 @@
       height: 300px;
     }
 
+    #heart-vid {
+      height: 200px;
+    }
+
     .reveal {
       min-height: 100vh;
       background-color: #000;
@@ -108,7 +112,7 @@
         <div id="flip-panel">Flipping</div>
         <div>CRM</div>
         <div class="birdcage">
-          <video class="the-birds" id="bird-vid" autobuffer="autobuffer" preload="preload" autoplay loop muted playsinline>
+          <video class="the-birds" id="bird-vid" autobuffer="autobuffer" preload="preload" autoplay muted playsinline>
             <source src="https://res.cloudinary.com/dyn2cmtsg/video/upload/v1642563082/iwea0u051rn9zby5lvih.mp4" type="video/mp4">
             <source src="https://res.cloudinary.com/dyn2cmtsg/video/upload/v1642563082/iwea0u051rn9zby5lvih.mov" type="video/mov">
           </video>
@@ -117,11 +121,17 @@
     </section>
   
     <section class="reveal" data-scroll-section>
+      <div></div>
       <div>
         <p class="wordmark">Bestomer</p>
         <p><button class="about">About Us</button></p>
-        <p><img src="img/hand4.png" alt="hands 4"></p>
+        <p>
+          <video id="heart-vid" autobuffer="autobuffer" preload="preload" autoplay muted playsinline>
+            <source src="https://res.cloudinary.com/dyn2cmtsg/video/upload/v1642637024/uclztijxuutegh69sdrc.mp4" type="video/mp4">
+          </video>
+          </p>
       </div>
+      <div data-scroll data-scroll-id="reveal"></div>
       <div class="footnote">
         © 2021 Bestomer.<br>
         All Rights Reserved.
@@ -132,10 +142,30 @@
 
   <script>
     let flrp = document.getElementById('flip-panel');
-    let vid = document.getElementById('bird-vid');
-    let videoDuration;
-    let videoCursor = 0;
-    let isLoaded = false;
+    let birdVidEl = document.getElementById('bird-vid');
+    let birdVidDuration;
+    let birdVidCursor = 0;
+    let birdVidLoaded = false;
+    let heartVidEl = document.getElementById('heart-vid');
+    let heartVidDuration;
+    let heartVidCursor = 0;
+    let heartVidLoaded = false;
+
+    birdVidEl.addEventListener('loadeddata', function(event) {
+      birdVidDuration = birdVidEl.duration;
+      birdVidLoaded = true;
+      // more iOS hacks
+      birdVidEl.play();
+      birdVidEl.pause();
+    });
+
+    heartVidEl.addEventListener('loadeddata', function(event) {
+      heartVidDuration = heartVidEl.duration;
+      heartVidLoaded = true;
+      // more iOS hacks
+      heartVidEl.play();
+      heartVidEl.pause();
+    });
 
     const scroll = new LocomotiveScroll({
       el: document.querySelector('[data-scroll-container]'),
@@ -158,23 +188,22 @@
     };
     document.getElementById('preamble').addEventListener('click', autoRun);
 
-    vid.addEventListener('loadeddata', function(event) {
-      videoDuration = vid.duration;
-      isLoaded = true;
-      // more iOS hacks
-      vid.play();
-      vid.pause();
-    });
-
     scroll.on('scroll', (args) => {
       // Get all current elements : args.currentElements
       if(typeof args.currentElements['hey'] === 'object') {
         let progress = args.currentElements['hey'].progress;
         let scaleFactor = Math.min(180, Math.round(progress * -180));
         flrp.style.transform = `rotateX(${scaleFactor}deg)`;
-        if (isLoaded) {
-          videoCursor = progress * videoDuration;
-          vid.currentTime = videoCursor;
+        if (birdVidLoaded) {
+          birdVidCursor = progress * birdVidDuration;
+          birdVidEl.currentTime = birdVidCursor;
+        }
+      } else if (typeof args.currentElements['reveal'] === 'object') {
+        let progress = args.currentElements['reveal'].progress;
+        console.log(progress);
+        if (heartVidLoaded) {
+          heartVidCursor = progress * heartVidDuration;
+          heartVidEl.currentTime = heartVidCursor;
         }
       }
     });
